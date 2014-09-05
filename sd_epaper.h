@@ -27,34 +27,16 @@
 #include "ePaperDfs.h"
 #include "EPD.h"
 
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
-
-#define OLDIMAGENAME "oldimage"
-#define NEWIMAGENAME "newimage"
-
-#endif
 
 #define BLACK   1
 #define WHITE   0
 
-#define SD_DEBUG            0
-
-#if SD_DEBUG
-#define print_sd(X)         Serial.print(X)
-#define println_sd(X)       Serial.println(X)
-#else
 #define print_sd(X)
 #define println_sd(X)
-#endif
 
-class sd_epaper
-{
-private:
+class sd_epaper {
 
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
-    File old_image;
-    File new_image;
-#endif 
+  private:
     int SIZE_LEN;
     int SIZE_WIDTH;
     int LINE_BYTE;
@@ -67,30 +49,12 @@ private:
     
     EPD_DIR direction;
 
-public:
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-    unsigned char sram_image[5808];    // 264*176/8
-#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
-    unsigned char lineDta[33];
-#endif
-    
-public:
+  public:
+    unsigned char sram_image[5808];
 
     void begin(EPD_size sz);
-
     void setDirection(EPD_DIR dir);
-    
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
-    unsigned char openFile();
-    unsigned char closeFile();
-
-    unsigned char putLine(int line, unsigned char *dta);
-    unsigned char getLine(int line, unsigned char *dta);
-    void getPixel(int x, int y);
-#endif 
     void putPixel(int x, int y, unsigned char pixel);
-
-    
     unsigned char clear();
 
 };
@@ -98,7 +62,3 @@ public:
 extern sd_epaper eSD;
 
 #endif
-
-/*********************************************************************************************************
-  END FILE
-*********************************************************************************************************/
