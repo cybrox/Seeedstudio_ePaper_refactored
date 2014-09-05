@@ -5,10 +5,6 @@
 
 #include "EPD.h"
 
-// delays - more consistent naming
-#define Delay_ms(ms) delay(ms)
-#define Delay_us(us) delayMicroseconds(us)
-
 // inline arrays
 #define ARRAY(type, ...) ((type[]){__VA_ARGS__})
 #define CU8(...) (ARRAY(const uint8_t, __VA_ARGS__))
@@ -59,105 +55,105 @@ void EPD_Class::start() {
     
 	SPI_on();
 	PWM_start(this->EPD_Pin_PWM);
-	Delay_ms(5);
+	delay(5);
 	digitalWrite(this->EPD_Pin_PANEL_ON, HIGH);
-	Delay_ms(10);
+	delay(10);
 
 	digitalWrite(this->EPD_Pin_RESET, HIGH);
 	digitalWrite(this->EPD_Pin_BORDER, HIGH);
 	digitalWrite(this->EPD_Pin_EPD_CS, HIGH);
-	Delay_ms(5);
+	delay(5);
 
 	digitalWrite(this->EPD_Pin_RESET, LOW);
-	Delay_ms(5);
+	delay(5);
 
 	digitalWrite(this->EPD_Pin_RESET, HIGH);
-	Delay_ms(5);
+	delay(5);
 
 	while (HIGH == digitalRead(this->EPD_Pin_BUSY));
 
 	// channel select
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x01), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, this->channel_select, this->channel_select_length);
 
 	// DC/DC frequency
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x06), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0xff), 2);
 
 	// high power mode osc
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x07), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x9d), 2);
 
 	// disable ADC
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x08), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x00), 2);
 
 	// Vcom level
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x09), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0xd0, 0x00), 3);
 
 	// gate and source voltage levels
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x04), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, this->gate_source, this->gate_source_length);
 
-	Delay_ms(5);  //???
+	delay(5);  //???
 
 	// driver latch on
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x03), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x01), 2);
 
 	// driver latch off
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x03), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x00), 2);
 
-	Delay_ms(5);
+	delay(5);
 
 	// charge pump positive voltage on
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x05), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x01), 2);
 
 	// final delay before PWM off
-	Delay_ms(30);
+	delay(30);
 	PWM_stop(this->EPD_Pin_PWM);
 
 	// charge pump negative voltage on
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x05), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x03), 2);
 
-	Delay_ms(30);
+	delay(30);
 
 	// Vcom driver on
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x05), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x0f), 2);
 
-	Delay_ms(30);
+	delay(30);
 
 	// output enable to disable
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x02), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x24), 2);
     
   SPI_off();
@@ -167,77 +163,77 @@ void EPD_Class::start() {
 void EPD_Class::end() {
 	this->line(0x7fffu, 0, 0x55, false, EPD_normal);
 
-	Delay_ms(25);
+	delay(25);
 
 	digitalWrite(this->EPD_Pin_BORDER, LOW);
-	Delay_ms(250);
+	delay(250);
 	digitalWrite(this->EPD_Pin_BORDER, HIGH);
 
   SPI_on();
 	// latch reset turn on
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x03), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x01), 2);
 
 	// output enable off
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x02), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x05), 2);
 
 	// Vcom power off
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x05), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x0e), 2);
 
 	// power off negative charge pump
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x05), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x02), 2);
 
 	// discharge
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x04), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x0c), 2);
 
-	Delay_ms(120);
+	delay(120);
 
 	// all charge pumps off
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x05), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x00), 2);
 
 	// turn of osc
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x07), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x0d), 2);
 
 	// discharge internal - 1
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x04), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x50), 2);
 
-	Delay_ms(40);
+	delay(40);
 
 	// discharge internal - 2
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x04), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0xA0), 2);
 
-	Delay_ms(40);
+	delay(40);
 
 	// discharge internal - 3
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x04), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x00), 2);
 	// turn of power and all signals
     //
@@ -252,7 +248,7 @@ void EPD_Class::end() {
 
 	// discharge pulse
 	digitalWrite(this->EPD_Pin_DISCHARGE, HIGH);
-	Delay_ms(250);
+	delay(250);
 	digitalWrite(this->EPD_Pin_DISCHARGE, LOW);
     
   digitalWrite(EPD_Pin_EPD_CS, HIGH);
@@ -373,15 +369,15 @@ void EPD_Class::line(uint16_t line, const uint8_t *data, uint8_t fixed_value, bo
 {
 	// charge pump voltage levels
     SPI_on();
-    Delay_us(10);
+    delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x04), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, this->gate_source, this->gate_source_length);
 
 	// send data
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x0a), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 
 	// CS low
 	digitalWrite(this->EPD_Pin_EPD_CS, LOW);
@@ -499,9 +495,9 @@ void EPD_Class::line(uint16_t line, const uint8_t *data, uint8_t fixed_value, bo
 	digitalWrite(this->EPD_Pin_EPD_CS, HIGH);
 
 	// output data to panel
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x02), 2);
-	Delay_us(10);
+	delayMicroseconds(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x2f), 2);
     SPI_off();    
 }
@@ -512,13 +508,13 @@ static void SPI_on() {
     SPI.begin();
     SPI_put(0x00);
     SPI_put(0x00);
-    Delay_us(10);
+    delayMicroseconds(10);
 }
 
 static void SPI_off() {
     SPI_put(0x00);
     SPI_put(0x00);
-    Delay_us(10);
+    delayMicroseconds(10);
     SPI.end();
 
     pinMode(SCK, OUTPUT);
