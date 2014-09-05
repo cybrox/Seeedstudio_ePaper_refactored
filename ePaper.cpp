@@ -4,13 +4,12 @@
 
 
 void ePaper::begin(EPD_size sz){
-  size = sz;
-  direction = DIRNORMAL;
-
-  DISP_LEN  = 200;
-  DISP_WIDTH  = 96;
+  DISPLAY_DIRECT = DIRNORMAL;
+  DISPLAY_SIZE_X = 200; // Display size (in pixels) on x axis
+  DISPLAY_SIZE_Y = 96;  // Display size (in pixels) on y axis
+  DISPLAY_LINE_B = 25;  // Display bytes per line (x size / 8)
   
-  EPD.begin(size);
+  EPD.begin(sz);
   init_io();
   matrix_begin();
 }
@@ -46,17 +45,10 @@ void ePaper::init_io(){
 /***** Buffer methods merged from sd_epaper                                                                                                     *****/
 /****************************************************************************************************************************************************/
 void ePaper::buffer_write(int x, int y, bool fill){
-  int x1 = x;
-  int y1 = y;
-  
-  int DISP_LEN  = 200;
-  int DISP_WIDTH  = 96;
-  int LINE_BYTE = 200/8;
-
-  if(x>DISP_LEN || y>DISP_WIDTH)return;
+  if(x > DISPLAY_SIZE_X || y > DISPLAY_SIZE_Y)return;
   
   int bit = x & 0x07;
-  int byte = (x>>3) + y * LINE_BYTE;
+  int byte = (x>>3) + y * DISPLAY_LINE_B;
   
   int mask = 0x01 << bit;
 
@@ -179,7 +171,7 @@ unsigned long ePaper::matrix_read(unsigned long Address) {
 /***** User accessible methods for drawing                                                                                                      *****/
 /****************************************************************************************************************************************************/
 int ePaper::drawUnicode(unsigned int uniCode, int x, int y) {
-  int dtaLen = matrix_get_unicode(uniCode, tMatrix);
+  int dtaLen = matrix_get_unicode(uniCode, matrix_character);
 
 
   int pX    = 0;
@@ -189,7 +181,7 @@ int ePaper::drawUnicode(unsigned int uniCode, int x, int y) {
   for(int k = 0; k<2; k++) {
     for(int i=0; i<8; i++) {
       for(int j=0; j<(dtaLen/2); j++) {
-        if(tMatrix[j+(dtaLen/2)*k] & (0x01<<(7-i))) {  
+        if(matrix_character[j+(dtaLen/2)*k] & (0x01<<(7-i))) {  
           color = 1;
         } else {
           color = 0;

@@ -10,20 +10,20 @@
 class ePaper {
 
   private:
-    unsigned char tMatrix[32];
-    
-    int DISP_LEN;
-    int DISP_WIDTH;
-    
-    EPD_DIR direction;
+    int DISPLAY_SIZE_X;
+    int DISPLAY_SIZE_Y;
+    int DISPLAY_LINE_B;
+    EPD_DIR DISPLAY_DIRECT;
 
     /* Buffer */
     unsigned char _buffer[5808];
 
     /* Matrix */
     int matrix_pin_cs;
+    unsigned char matrix_character[32];
     unsigned long matrix_get_unicode_address(unsigned int uniCode);
     unsigned long matrix_read(unsigned long Address);
+    
     
   public:
 
