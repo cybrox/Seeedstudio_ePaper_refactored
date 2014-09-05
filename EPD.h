@@ -11,10 +11,6 @@
 #include <avr/pgmspace.h>
 #endif
 
-// if more SRAM available (8 kBytes)
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-#define EPD_ENABLE_EXTRA_SRAM 0
-#endif
 
 typedef enum {
     EPD_1_44,        // 128 x 96
@@ -94,7 +90,6 @@ class EPD_Class
         this->frame_data_repeat(new_image, EPD_normal);
     }
 
-#if defined(EPD_ENABLE_EXTRA_SRAM)
     // change from old image to new image (SRAM version)
     void image_sram(unsigned char *new_image) 
     {
@@ -103,35 +98,18 @@ class EPD_Class
         this->frame_sram_repeat(new_image, EPD_inverse);
         this->frame_sram_repeat(new_image, EPD_normal);
     }
-#endif
 
     // Low level API calls
-    // ===================
-
-    // single frame refresh
     void frame_fixed(uint8_t fixed_value, EPD_stage stage);
     void frame_data(PROGMEM const uint8_t *new_image, EPD_stage stage);
-
-#if defined(EPD_ENABLE_EXTRA_SRAM)
     void frame_sram(const uint8_t *new_image, EPD_stage stage);
-#endif
     void frame_cb(uint32_t address, EPD_reader *reader, EPD_stage stage);
-
-    // stage_time frame refresh
     void frame_fixed_repeat(uint8_t fixed_value, EPD_stage stage);
     void frame_data_repeat(PROGMEM const uint8_t *new_image, EPD_stage stage);
-
-#if defined(EPD_ENABLE_EXTRA_SRAM)
     void frame_sram_repeat(const uint8_t *new_image, EPD_stage stage);
-#endif
     void frame_cb_repeat(uint32_t address, EPD_reader *reader, EPD_stage stage);
-
-    // single line display - very low-level
-    // also has to handle AVR progmem
     void line(uint16_t line, const uint8_t *data, uint8_t fixed_value, bool read_progmem, EPD_stage stage);
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
     void line_sd(uint16_t line, const uint8_t *data, uint8_t fixed_value, bool read_progmem, EPD_stage stage);
-#endif
 };
 
 extern EPD_Class EPD;
