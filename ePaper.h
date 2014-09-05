@@ -36,30 +36,28 @@ public:
     
     void begin(EPD_size sz);
     void setDirection(EPD_DIR dir);
-    void start();
-    void end(); 
     void init_io();
     
     unsigned char display();                // refresh 
     
     void image_flash(PROGMEM const unsigned char *image) {
-        start();
+        EPD.start();
         EPD.image(image);
-        end();
+        EPD.end();
     } 
  
     void clear() {
-        start();
+        EPD.start();
         EPD.clear();
-        end();
+        EPD.end();
     } 
     
     void clear_sd();                         // clear sd card 
 
     void image_sram(unsigned char *image) {
-        start();
+        EPD.start();
         EPD.image_sram(image);
-        end();
+        EPD.end();
     }
     
     inline void drawPixel(int x, int y, unsigned char color) {

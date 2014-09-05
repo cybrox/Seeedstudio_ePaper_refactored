@@ -19,13 +19,6 @@ void ePaper::begin(EPD_size sz){
     init_io();
 }
 
-void ePaper::start(){
-    EPD.start();
-}
-
-void ePaper::end(){
-    EPD.end();
-}
 
 void ePaper::init_io(){
     pinMode(Pin_BUSY, INPUT);
@@ -363,9 +356,9 @@ void ePaper::fillRectangle(int poX, int poY, int len, int width)
 
 unsigned char ePaper::display()
 {
-    start();
+    EPD.start();
     EPD.image_sram(eSD.sram_image);
-    end();
+    EPD.end();
 }
 
 ePaper EPAPER;
