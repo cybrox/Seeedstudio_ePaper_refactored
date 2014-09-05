@@ -7,16 +7,6 @@
 
 #include "ePaperDfs.h"
 
-#define EP_DEBUG            1
-
-#if EP_DEBUG
-#define print_ep(X)         Serial.print(X)
-#define println_ep(X)       Serial.println(X)
-#else
-#define print_ep(X)
-#define println_ep(X)
-#endif
-
 class ePaper {
 
   private:
