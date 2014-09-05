@@ -19,6 +19,11 @@ class ePaper {
 
     /* Buffer */
     unsigned char _buffer[5808];
+
+    /* Matrix */
+    int matrix_pin_cs;
+    unsigned long matrix_get_unicode_address(unsigned int uniCode);
+    unsigned long matrix_read(unsigned long Address);
     
   public:
 
@@ -55,6 +60,13 @@ class ePaper {
      */
     void buffer_clear();
     void buffer_write(int x, int y, bool fill);
+
+
+    /**
+     * Matrix method to get unicode chars from display chip
+     */
+    void matrix_begin();
+    int matrix_get_unicode(unsigned int uniCode, unsigned char *matrix);
 
 
     /**
