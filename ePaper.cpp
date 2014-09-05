@@ -62,7 +62,7 @@ int ePaper::drawUnicode(unsigned int uniCode, int x, int y) {
         pY = y + k*8+i;
         
         
-        eSD.putPixel(pX, pY, color);
+        buffer_write(pX, pY, color);
       }
     }
   }
@@ -91,7 +91,7 @@ int ePaper::drawUnicode(unsigned char *matrix, int x, int y)
         pX = x + j;
         pY = y + k*8+i;
         
-        eSD.putPixel(pX, pY, color);
+        buffer_write(pX, pY, color);
       }
     }
   }
@@ -204,7 +204,7 @@ void ePaper::drawLine(int x0, int y0, int x1, int y1) {
   int dy = -abs(y), sy = y0<y1 ? 1 : -1;
   int err = dx+dy, e2;                        
   for (;;) {                              
-    eSD.putPixel(x0,y0,1);
+    buffer_write(x0,y0,1);
     e2 = 2*err;
     if (e2 >= dy) {                        
       if (x0 == x1) break;
@@ -222,10 +222,10 @@ void ePaper::drawCircle(int poX, int poY, int r) {
   init_io();
   int x = -r, y = 0, err = 2-2*r, e2;
   do {
-    eSD.putPixel(poX-x, poY+y, 1);
-    eSD.putPixel(poX+x, poY+y, 1);
-    eSD.putPixel(poX+x, poY-y, 1);
-    eSD.putPixel(poX-x, poY-y, 1);
+    buffer_write(poX-x, poY+y, 1);
+    buffer_write(poX+x, poY+y, 1);
+    buffer_write(poX+x, poY-y, 1);
+    buffer_write(poX-x, poY-y, 1);
     e2 = err;
     if (e2 <= y) {
       err += ++y*2+1;
@@ -286,8 +286,37 @@ void ePaper::fillRectangle(int poX, int poY, int len, int width) {
 
 unsigned char ePaper::display() {
   EPD.start();
-  EPD.image_sram(eSD.sram_image);
+  EPD.image_sram(_buffer);
   EPD.end();
 }
+
+
+/**
+ * Buffer methods -------------------------------------------------------------
+ */
+void ePaper::buffer_write(int x, int y, bool fill){
+  int x1 = x;
+  int y1 = y;
+  
+  int DISP_LEN  = 200;
+  int DISP_WIDTH  = 96;
+  int LINE_BYTE = 200/8;
+
+  if(x>DISP_LEN || y>DISP_WIDTH)return;
+  
+  int bit = x & 0x07;
+  int byte = (x>>3) + y * LINE_BYTE;
+  
+  int mask = 0x01 << bit;
+
+  if (fill) _buffer[byte] |= mask;
+  else _buffer[byte] &= ~mask;
+}
+
+
+void ePaper::buffer_clear() {
+  memset(_buffer, 0x00, 5808);
+}
+
 
 ePaper EPAPER;

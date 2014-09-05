@@ -3,8 +3,6 @@
 #include <SPI.h>
 #include <SD.h>
 
-#include "sd_epaper.h"
-
 #include "EPD.h"
 
 // delays - more consistent naming

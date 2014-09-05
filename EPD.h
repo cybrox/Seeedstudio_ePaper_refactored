@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>
+#include "ePaperDfs.h"
 
 #if defined(__MSP430_CPU__)
 #define PROGMEM

@@ -5,7 +5,6 @@
 #include <SPI.h>
 #include <EPD.h>
 
-#include "sd_epaper.h"
 #include "ePaperDfs.h"
 
 #define EP_DEBUG            1
@@ -18,19 +17,20 @@
 #define println_ep(X)
 #endif
 
-class ePaper
-{
+class ePaper {
 
-private:
-
+  private:
     unsigned char tMatrix[32];
     
     int DISP_LEN;
     int DISP_WIDTH;
     
     EPD_DIR direction;
+
+    /* Buffer */
+    unsigned char _buffer[5808];
     
-public:
+  public:
 
     EPD_size size;
     
@@ -38,26 +38,39 @@ public:
     void setDirection(EPD_DIR dir);
     void init_io();
     
-    unsigned char display();                // refresh 
+    unsigned char display();
     
+    /* REDIRECTING FUNCTIONS /FOR NOW/ */
     void image_flash(PROGMEM const unsigned char *image) {
-        EPD.start();
-        EPD.image(image);
-        EPD.end();
+      EPD.start();
+      EPD.image(image);
+      EPD.end();
     } 
  
     void clear() {
-        EPD.start();
-        EPD.clear();
-        EPD.end();
+      EPD.start();
+      EPD.clear();
+      EPD.end();
     } 
 
     void image_sram(unsigned char *image) {
-        EPD.start();
-        EPD.image_sram(image);
-        EPD.end();
+      EPD.start();
+      EPD.image_sram(image);
+      EPD.end();
     }
     
+
+    /**
+     * Buffer methods, merged from old sd_epaper
+     */
+    void buffer_clear();
+    void buffer_write(int x, int y, bool fill);
+
+
+    /**
+     * Draw methods that allow the user to actually do
+     * something with the display's content before rendering
+     */
     int drawChar(char c, int x, int y);
     int drawString(char *string, int poX, int poY);
     int drawNumber(long long_num,int poX, int poY);
