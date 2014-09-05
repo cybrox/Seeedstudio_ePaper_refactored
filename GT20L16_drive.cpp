@@ -44,7 +44,7 @@ int GT20L16_drive::getMatrixUnicode(unsigned int uniCode, unsigned char *matrix)
     delayMicroseconds(10);
     
     
-    GT_Select();
+    digitalWrite(pinCS, LOW);
     SPI.transfer(0x03);
     SPI.transfer(Add>>16);
     SPI.transfer(Add>>8);
@@ -59,21 +59,9 @@ int GT20L16_drive::getMatrixUnicode(unsigned int uniCode, unsigned char *matrix)
         delay(5);
     }
     SPI.setBitOrder(MSBFIRST);
-    GT_UnSelect();
+    digitalWrite(pinCS, HIGH);
     
     return dtaLen;
-}
-
-
-void GT20L16_drive::GT_Select()
-{
-    digitalWrite(pinCS, LOW);
-}
-
-
-void GT20L16_drive::GT_UnSelect()
-{
-    digitalWrite(pinCS, HIGH);
 }
 
 
@@ -162,7 +150,7 @@ unsigned long GT20L16_drive::GTRead(unsigned long Address)
     unsigned char buffer[2]={0};
     unsigned int data;
     delayMicroseconds(10);
-    GT_Select();
+    digitalWrite(pinCS, LOW);
     SPI.transfer(0x03);
     SPI.transfer(Address>>16);
     SPI.transfer(Address>>8);
@@ -171,7 +159,7 @@ unsigned long GT20L16_drive::GTRead(unsigned long Address)
     {
         buffer[i]=SPI.transfer(0x00);
     }
-    GT_UnSelect();
+    digitalWrite(pinCS, HIGH);
     data=buffer[0]*256+buffer[1];
     return data;
 }

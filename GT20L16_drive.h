@@ -6,13 +6,7 @@
 class GT20L16_drive{
 
 private:
-
     int pinCS;
-
-private:
-
-    void GT_Select();
-    void GT_UnSelect();
     unsigned long getAddrFromUnicode(unsigned int uniCode);
     unsigned long GTRead(unsigned long Address);
 public:
