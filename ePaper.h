@@ -46,11 +46,7 @@ class ePaper
 
 private:
 
-    int getTemperature();                   // get temperature
     unsigned char tMatrix[32];
-    
-    int SIZE_LEN;
-    int SIZE_WIDTH;
     
     int DISP_LEN;
     int DISP_WIDTH;
@@ -92,7 +88,6 @@ public:
     
 
    
-    void spi_detach();
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
     void image_sram(unsigned char *image)
     {

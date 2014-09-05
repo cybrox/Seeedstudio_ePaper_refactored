@@ -60,11 +60,7 @@ void ePaper::begin(EPD_size sz)
 *********************************************************************************************************/
 void ePaper::start()
 {
-    EPD.start();                 // power up the EPD panel
-    
-    int tmp = getTemperature();
-    Serial.print("temperature: ");
-    EPD.setFactor(getTemperature());         // adjust for current temperature
+    EPD.start();
 }
 
 /*********************************************************************************************************
@@ -108,23 +104,6 @@ void ePaper::init_io()
     //SPI.setClockDivider(SPI_CLOCK_DIV2);
 }
 
-/*********************************************************************************************************
-** Function name:           getTemperature
-** Descriptions:            get temperature of sensor
-*********************************************************************************************************/
-int ePaper::getTemperature()
-{
-    int sum = 0;
-    for(int i=0; i<32; i++)
-    {
-        sum += analogRead(Pin_TEMPERATURE);
-    }
-    sum  = sum >> 5;
-
-    float temp = 209.56-121.7*(float(sum)/1023.0*5.0);
-
-    return (int)temp;
-}
 
 /*********************************************************************************************************
 ** Function name:           drawUnicode
