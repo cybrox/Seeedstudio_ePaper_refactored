@@ -4,29 +4,13 @@
 #include "GT20L16_drive.h"
 #include "ePaper.h"
 
-static void spi_on()
-{
-    SPI.begin();
-    //SPI.setClockDivider(SPI_CLOCK_DIV2);
-    //SPI_put(0x00);
-    //SPI_put(0x00);
-}
 
-/*********************************************************************************************************
-** Function name:           begin
-** Descriptions:            init IO
-*********************************************************************************************************/
 void GT20L16_drive::begin(int pinSelect)
 {
     pinCS = pinSelect;
     pinMode(pinCS, OUTPUT);
     digitalWrite(pinCS, HIGH);
 }
-
-/*********************************************************************************************************
-** Function name:           getMatrixUnicode
-** Descriptions:            get matrix, unicode
-*********************************************************************************************************/
 
 
 int GT20L16_drive::getMatrixUnicode(unsigned int uniCode, unsigned char *matrix)
@@ -45,7 +29,6 @@ int GT20L16_drive::getMatrixUnicode(unsigned int uniCode, unsigned char *matrix)
     
     unsigned char dtaLen = 0;
     
-    //spi_on();
     if(uniCode <= 45632 )
     {
         dtaLen = 16;
@@ -81,28 +64,19 @@ int GT20L16_drive::getMatrixUnicode(unsigned int uniCode, unsigned char *matrix)
     return dtaLen;
 }
 
-/*********************************************************************************************************
-** Function name:           GT_Select
-** Descriptions:            chip select
-*********************************************************************************************************/
+
 void GT20L16_drive::GT_Select()
 {
     digitalWrite(pinCS, LOW);
 }
 
-/*********************************************************************************************************
-** Function name:           GT_UnSelect
-** Descriptions:            chip unselect
-*********************************************************************************************************/
+
 void GT20L16_drive::GT_UnSelect()
 {
     digitalWrite(pinCS, HIGH);
 }
 
-/*********************************************************************************************************
-** Function name:           getAddrFromUnicode
-** Descriptions:            get .. address
-*********************************************************************************************************/
+
 unsigned long GT20L16_drive::getAddrFromUnicode(unsigned int uniCode)
 {
     
@@ -182,10 +156,6 @@ unsigned long GT20L16_drive::getAddrFromUnicode(unsigned int uniCode)
 }
 
 
-/*********************************************************************************************************
-** Function name:           GTRead
-** Descriptions:            GTRead
-*********************************************************************************************************/
 unsigned long GT20L16_drive::GTRead(unsigned long Address)
 {
     unsigned char i;
@@ -207,7 +177,3 @@ unsigned long GT20L16_drive::GTRead(unsigned long Address)
 }
 
 GT20L16_drive GT20L16;
-
-/*********************************************************************************************************
-  END FILE
-*********************************************************************************************************/
