@@ -75,7 +75,7 @@ int ePaper::drawUnicode(unsigned int uniCode, int x, int y) {
                 pY = y + k*8+i;
                 
                 
-                drawPixel(pX, pY, color);
+                eSD.putPixel(pX, pY, color);
             }
         }
     }
@@ -110,7 +110,7 @@ int ePaper::drawUnicode(unsigned char *matrix, int x, int y)
                 pX = x + j;
                 pY = y + k*8+i;
                 
-                drawPixel(pX, pY, color);
+                eSD.putPixel(pX, pY, color);
             }
         }
     }
@@ -244,7 +244,7 @@ void ePaper::drawLine(int x0, int y0, int x1, int y1)
     int err = dx+dy, e2;                                              
     for (;;)
     {                                                          
-        drawPixel(x0,y0,1);
+        eSD.putPixel(x0,y0,1);
         e2 = 2*err;
         if (e2 >= dy) 
         {                                                
@@ -269,7 +269,7 @@ void ePaper::clear_sd()
     {
         for(int j=0; j<DISP_LEN; j++)
         {
-            drawPixel(j, i, 0);
+            eSD.putPixel(j, i, 0);
             
         }
     }
@@ -282,10 +282,10 @@ void ePaper::drawCircle(int poX, int poY, int r)
     init_io();
     int x = -r, y = 0, err = 2-2*r, e2;
     do {
-        drawPixel(poX-x, poY+y, 1);
-        drawPixel(poX+x, poY+y, 1);
-        drawPixel(poX+x, poY-y, 1);
-        drawPixel(poX-x, poY-y, 1);
+        eSD.putPixel(poX-x, poY+y, 1);
+        eSD.putPixel(poX+x, poY+y, 1);
+        eSD.putPixel(poX+x, poY-y, 1);
+        eSD.putPixel(poX-x, poY-y, 1);
         e2 = err;
         if (e2 <= y) {
             err += ++y*2+1;

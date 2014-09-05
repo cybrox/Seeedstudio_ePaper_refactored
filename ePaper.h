@@ -60,10 +60,6 @@ public:
         EPD.end();
     }
     
-    inline void drawPixel(int x, int y, unsigned char color) {
-      eSD.putPixel(x, y, color);
-    }
-    
     int drawChar(char c, int x, int y);
     int drawString(char *string, int poX, int poY);
     int drawNumber(long long_num,int poX, int poY);
@@ -87,7 +83,3 @@ public:
 extern ePaper EPAPER;
 
 #endif
-
-/*********************************************************************************************************
-  END FILE
-*********************************************************************************************************/
