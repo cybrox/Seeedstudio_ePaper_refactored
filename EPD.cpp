@@ -41,9 +41,7 @@ static void SPI_on();
 static void SPI_off();
 static void SPI_off_final();
 
-void EPD_Class::begin(EPD_size sz)
-{
-
+void EPD_Class::begin(EPD_size sz) {
 	EPD_Pin_EPD_CS      = Pin_EPD_CS;
 	EPD_Pin_PANEL_ON    = Pin_PANEL_ON;
 	EPD_Pin_BORDER      = Pin_BORDER;
@@ -53,78 +51,31 @@ void EPD_Class::begin(EPD_size sz)
 	EPD_Pin_BUSY        = Pin_BUSY;
 
 	this->size = sz;
-	this->stage_time = 480; // milliseconds
+	this->stage_time = 480;
 	this->lines_per_display = 96;
-	this->dots_per_line = 128;
-	this->bytes_per_line = 128 / 8;
+	this->dots_per_line = 200;
+	this->bytes_per_line = 200 / 8;
 	this->bytes_per_scan = 96 / 4;
-	this->filler = false;
-
-
-	// display size dependant items
-	//{
-	/*	static uint8_t cs[] = {0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0f, 0xff, 0x00};
-		static uint8_t gs[] = {0x72, 0x03};
-		this->channel_select = cs;
-		this->channel_select_length = sizeof(cs);
-		this->gate_source = gs;
-		this->gate_source_length = sizeof(gs);*/
-	//}
-
-	// set up size structure
-	switch (size) {
-	default:
-	case EPD_1_44:  // default so no change
-		break;
-
-	case EPD_2_0: {
-		this->lines_per_display = 96;
-		this->dots_per_line = 200;
-		this->bytes_per_line = 200 / 8;
-		this->bytes_per_scan = 96 / 4;
-		this->filler = true;
-		static uint8_t cs[] = {0x72, 0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0xe0, 0x00};
-		static uint8_t gs[] = {0x72, 0x03};
-		this->channel_select = cs;
-		this->channel_select_length = sizeof(cs);
-		this->gate_source = gs;
-		this->gate_source_length = sizeof(gs);
-		break;
-	}
-
-	case EPD_2_7: {
-		this->stage_time = 630; // milliseconds
-		this->lines_per_display = 176;
-		this->dots_per_line = 264;
-		this->bytes_per_line = 264 / 8;
-		this->bytes_per_scan = 176 / 4;
-		this->filler = true;
-		static uint8_t cs[] = {0x72, 0x00, 0x00, 0x00, 0x7f, 0xff, 0xfe, 0x00, 0x00};
-		static uint8_t gs[] = {0x72, 0x00};
-		this->channel_select = cs;
-		this->channel_select_length = sizeof(cs);
-		this->gate_source = gs;
-		this->gate_source_length = sizeof(gs);
-		break;
-	}
-	}
+	this->filler = true;
+	static uint8_t cs[] = {0x72, 0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0xe0, 0x00};
+	static uint8_t gs[] = {0x72, 0x03};
+	this->channel_select = cs;
+	this->channel_select_length = sizeof(cs);
+	this->gate_source = gs;
+	this->gate_source_length = sizeof(gs);
 
 	this->factored_stage_time = this->stage_time;
 }
 
 
 void EPD_Class::start() {
-
-	// power up sequence
-	//SPI_put(0x00);
-
 	digitalWrite(this->EPD_Pin_RESET, LOW);
 	digitalWrite(this->EPD_Pin_PANEL_ON, LOW);
 	digitalWrite(this->EPD_Pin_DISCHARGE, LOW);
 	digitalWrite(this->EPD_Pin_BORDER, LOW);
 	digitalWrite(this->EPD_Pin_EPD_CS, LOW);
     
-    SPI_on();
+	SPI_on();
 	PWM_start(this->EPD_Pin_PWM);
 	Delay_ms(5);
 	digitalWrite(this->EPD_Pin_PANEL_ON, HIGH);
@@ -141,10 +92,7 @@ void EPD_Class::start() {
 	digitalWrite(this->EPD_Pin_RESET, HIGH);
 	Delay_ms(5);
 
-	// wait for COG to become ready
-
-	while (HIGH == digitalRead(this->EPD_Pin_BUSY)) {
-	}
+	while (HIGH == digitalRead(this->EPD_Pin_BUSY));
 
 	// channel select
 	Delay_us(10);
@@ -163,7 +111,6 @@ void EPD_Class::start() {
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x07), 2);
 	Delay_us(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x9d), 2);
-
 
 	// disable ADC
 	Delay_us(10);
@@ -231,33 +178,20 @@ void EPD_Class::start() {
 	Delay_us(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x24), 2);
     
-    SPI_off();
+  SPI_off();
 }
 
 
-void EPD_Class::end() 
-{
-	// dummy frame
-	//this->frame_fixed(0x55, EPD_normal);
-	// dummy line and border
-	if (EPD_1_44 == this->size) {
-		// only for 1.44" EPD
-		this->line(0x7fffu, 0, 0xaa, false, EPD_normal);
+void EPD_Class::end() {
+	this->line(0x7fffu, 0, 0x55, false, EPD_normal);
 
-		Delay_ms(250);
+	Delay_ms(25);
 
-	} 
-    else {
-		// all other display sizes
-		this->line(0x7fffu, 0, 0x55, false, EPD_normal);
+	digitalWrite(this->EPD_Pin_BORDER, LOW);
+	Delay_ms(250);
+	digitalWrite(this->EPD_Pin_BORDER, HIGH);
 
-		Delay_ms(25);
-
-		digitalWrite(this->EPD_Pin_BORDER, LOW);
-		Delay_ms(250);
-		digitalWrite(this->EPD_Pin_BORDER, HIGH);
-	}
-    SPI_on();
+  SPI_on();
 	// latch reset turn on
 	Delay_us(10);
 	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x03), 2);
@@ -326,12 +260,12 @@ void EPD_Class::end()
 	// turn of power and all signals
     //
 
-    delay(10);
+  delay(10);
 	digitalWrite(this->EPD_Pin_RESET, LOW);
 	digitalWrite(this->EPD_Pin_PANEL_ON, LOW);
 	digitalWrite(this->EPD_Pin_BORDER, LOW);
 
-    SPI_off_final();
+  SPI_off_final();
 //	digitalWrite(this->EPD_Pin_EPD_CS, LOW);
 
 	// discharge pulse
@@ -339,8 +273,7 @@ void EPD_Class::end()
 	Delay_ms(250);
 	digitalWrite(this->EPD_Pin_DISCHARGE, LOW);
     
-    digitalWrite(EPD_Pin_EPD_CS, HIGH);
-
+  digitalWrite(EPD_Pin_EPD_CS, HIGH);
 }
 
 
