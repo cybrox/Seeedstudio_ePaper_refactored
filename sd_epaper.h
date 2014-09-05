@@ -50,12 +50,11 @@ class sd_epaper {
     EPD_DIR direction;
 
   public:
-    unsigned char sram_image[5808];
-
+    
     void begin(EPD_size sz);
-    void setDirection(EPD_DIR dir);
     void putPixel(int x, int y, unsigned char pixel);
     unsigned char clear();
+    unsigned char sram_image[5808];
 
 };
 

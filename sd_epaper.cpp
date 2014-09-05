@@ -27,63 +27,18 @@
 #include "ePaperDfs.h"
 
 
-static void spi_on()
-{
+static void spi_on(){
     SPI.begin();
-    //SPI.setClockDivider(SPI_CLOCK_DIV2);
-    //SPI_put(0x00);
-    //SPI_put(0x00);
 }
-/*********************************************************************************************************
-** Function name:           begin
-** Descriptions:            begin
-*********************************************************************************************************/
-void sd_epaper::begin(EPD_size sz)
-{
 
+void sd_epaper::begin(EPD_size sz) {
     openFileTime = 1;
     closeFileTime = 1;
-    //spi_on();
-    switch(sz)
-    {
-        case EPD_1_44:              // 128*96
-        SIZE_LEN    = 128;
-        SIZE_WIDTH  = 96;
-        break;
-        
-        case EPD_2_0:               // 200*96
-        SIZE_LEN    = 200;
-        SIZE_WIDTH  = 96;
-        break;
-        
-        case EPD_2_7:               // 264*176
-        SIZE_LEN    = 264;
-        SIZE_WIDTH  = 176;
-        break;
-        
-        default:
-        println_sd("wrong size");
-        while(1);                   // die here
-    }
     
-    DISP_LEN    = SIZE_LEN;
-    DISP_WIDTH  = SIZE_WIDTH;
-    
-    LINE_BYTE = SIZE_LEN/8;
+    DISP_LEN    = 200;
+    DISP_WIDTH  = 96;
+    LINE_BYTE = 200/8;
     clear();
-
-}
-
-
-void sd_epaper::setDirection(EPD_DIR dir)
-{
-    direction = dir;
-    
-    if((direction == DIRLEFT) || (direction == DIRRIGHT))
-    {
-        DISP_LEN    = SIZE_WIDTH;
-        DISP_WIDTH  = SIZE_LEN;
-    }
 }
 
 
