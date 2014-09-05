@@ -66,10 +66,6 @@ class EPD_Class
     void start();
     void end();
 
-    void setFactor(int temperature = 25) {
-        this->factored_stage_time = this->stage_time * this->temperature_to_factor_10x(temperature) / 10;
-    }
-
     // clear display (anything -> white)
     void clear()
     {
@@ -143,9 +139,6 @@ class EPD_Class
     void frame_sram_repeat(const uint8_t *new_image, EPD_stage stage);
 #endif
     void frame_cb_repeat(uint32_t address, EPD_reader *reader, EPD_stage stage);
-
-    // convert temperature to compensation factor
-    int temperature_to_factor_10x(int temperature);
 
     // single line display - very low-level
     // also has to handle AVR progmem

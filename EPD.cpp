@@ -262,29 +262,6 @@ void EPD_Class::end() {
 }
 
 
-// convert a temperature in Celcius to
-// the scale factor for frame_*_repeat methods
-int EPD_Class::temperature_to_factor_10x(int temperature) 
-{
-	if (temperature <= -10) {
-		return 170;
-	} else if (temperature <= -5) {
-		return 120;
-	} else if (temperature <= 5) {
-		return 80;
-	} else if (temperature <= 10) {
-		return 40;
-	} else if (temperature <= 15) {
-		return 30;
-	} else if (temperature <= 20) {
-		return 20;
-	} else if (temperature <= 40) {
-		return 10;
-	}
-	return 7;
-}
-
-
 // One frame of data is the number of lines * rows. For example:
 // The 1.44” frame of data is 96 lines * 128 dots.
 // The 2” frame of data is 96 lines * 200 dots.
