@@ -387,11 +387,7 @@ void ePaper::fillRectangle(int poX, int poY, int len, int width)
 unsigned char ePaper::display()
 {
     start();
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
-    EPD.image_sd();
-#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
     EPD.image_sram(eSD.sram_image);
-#endif
     end();
 }
 
