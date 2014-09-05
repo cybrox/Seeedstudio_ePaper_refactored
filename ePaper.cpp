@@ -260,22 +260,6 @@ void ePaper::drawLine(int x0, int y0, int x1, int y1)
 }
 
 
-void ePaper::clear_sd()
-{
-    
-    init_io();
-    
-    for(int i=0; i<DISP_WIDTH; i++)
-    {
-        for(int j=0; j<DISP_LEN; j++)
-        {
-            eSD.putPixel(j, i, 0);
-            
-        }
-    }
-}
-
-
 void ePaper::drawCircle(int poX, int poY, int r)
 {
 

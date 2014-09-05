@@ -51,8 +51,6 @@ public:
         EPD.clear();
         EPD.end();
     } 
-    
-    void clear_sd();                         // clear sd card 
 
     void image_sram(unsigned char *image) {
         EPD.start();
