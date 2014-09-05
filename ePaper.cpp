@@ -3,19 +3,19 @@
 #include "ePaper.h"
 
 
-void ePaper::begin(EPD_size sz){
+void ePaper::begin(){
   DISPLAY_DIRECT = DIRNORMAL;
   DISPLAY_SIZE_X = 200; // Display size (in pixels) on x axis
   DISPLAY_SIZE_Y = 96;  // Display size (in pixels) on y axis
   DISPLAY_LINE_B = 25;  // Display bytes per line (x size / 8)
   
-  EPD.begin(sz);
-  init_io();
+  EPD.begin(EPD_2_0);
+  begin_io();
   matrix_begin();
 }
 
 
-void ePaper::init_io(){
+void ePaper::begin_io(){
   pinMode(Pin_BUSY, INPUT);
   pinMode(Pin_RESET, OUTPUT);
   pinMode(Pin_PANEL_ON, OUTPUT);
@@ -76,7 +76,7 @@ void ePaper::matrix_begin() {
 int ePaper::matrix_get_unicode(unsigned int uniCode, unsigned char *matrix) {
   if(matrix == NULL)return 0;
   
-  init_io();
+  begin_io();
   matrix_begin();
 
   unsigned char i;
@@ -325,7 +325,7 @@ int ePaper::drawFloat(float floatNumber, int decimal, int poX, int poY) {
 
 
 void ePaper::drawLine(int x0, int y0, int x1, int y1) {
-  init_io();
+  begin_io();
   
   int x = x1-x0;
   int y = y1-y0;
@@ -348,7 +348,7 @@ void ePaper::drawLine(int x0, int y0, int x1, int y1) {
 
 
 void ePaper::drawCircle(int poX, int poY, int r) {
-  init_io();
+  begin_io();
   int x = -r, y = 0, err = 2-2*r, e2;
   do {
     buffer_write(poX-x, poY+y, 1);
@@ -413,7 +413,7 @@ void ePaper::fillRectangle(int poX, int poY, int len, int width) {
 }
 
 
-unsigned char ePaper::display() {
+void ePaper::display() {
   EPD.start();
   EPD.image_sram(_buffer);
   EPD.end();

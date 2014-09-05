@@ -24,35 +24,17 @@ class ePaper {
     unsigned long matrix_get_unicode_address(unsigned int uniCode);
     unsigned long matrix_read(unsigned long Address);
     
-    
-  public:
 
-    EPD_size size;
-    
-    void begin(EPD_size sz);
-    void setDirection(EPD_DIR dir);
-    void init_io();
-    
-    unsigned char display();
-    
-    /* REDIRECTING FUNCTIONS /FOR NOW/ */
-    void image_flash(PROGMEM const unsigned char *image) {
-      EPD.start();
-      EPD.image(image);
-      EPD.end();
-    } 
+  public:
+    void begin();
+    void begin_io();
+    void display();
  
     void clear() {
       EPD.start();
       EPD.clear();
       EPD.end();
     } 
-
-    void image_sram(unsigned char *image) {
-      EPD.start();
-      EPD.image_sram(image);
-      EPD.end();
-    }
     
 
     /**
