@@ -58,26 +58,20 @@ public:
     EPD_size size;
     
     void begin(EPD_size sz);
-    
     void setDirection(EPD_DIR dir);
-    
     void start();
-    
-    void end();
-    
+    void end(); 
     void init_io();
     
     unsigned char display();                // refresh 
     
-    void image_flash(PROGMEM const unsigned char *image)           // read image from flash
-    {
+    void image_flash(PROGMEM const unsigned char *image) {
         start();
         EPD.image(image);
         end();
     } 
  
-    void clear()                             // clear display
-    {
+    void clear() {
         start();
         EPD.clear();
         end();
@@ -85,23 +79,15 @@ public:
     
     void clear_sd();                         // clear sd card 
 
-    
-
-   
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-    void image_sram(unsigned char *image)
-    {
+    void image_sram(unsigned char *image) {
         start();
         EPD.image_sram(image);
         end();
     }
-#endif
     
-    inline void drawPixel(int x, int y, unsigned char color)
-    {
-		eSD.putPixel(x, y, color);
-        
-	}
+    inline void drawPixel(int x, int y, unsigned char color) {
+      eSD.putPixel(x, y, color);
+    }
     
     int drawChar(char c, int x, int y);
     int drawString(char *string, int poX, int poY);
