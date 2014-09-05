@@ -10,12 +10,12 @@ void ePaper::begin(){
   DISPLAY_LINE_B = 25;  // Display bytes per line (x size / 8)
   
   EPD.begin(EPD_2_0);
-  begin_io();
+  hardware_begin();
   matrix_begin();
 }
 
 
-void ePaper::begin_io(){
+void ePaper::hardware_begin(){
   pinMode(Pin_BUSY, INPUT);
   pinMode(Pin_RESET, OUTPUT);
   pinMode(Pin_PANEL_ON, OUTPUT);
@@ -76,7 +76,7 @@ void ePaper::matrix_begin() {
 int ePaper::matrix_get_unicode(unsigned int uniCode, unsigned char *matrix) {
   if(matrix == NULL)return 0;
   
-  begin_io();
+  hardware_begin();
   matrix_begin();
 
   unsigned char i;
@@ -325,7 +325,7 @@ int ePaper::drawFloat(float floatNumber, int decimal, int poX, int poY) {
 
 
 void ePaper::drawLine(int x0, int y0, int x1, int y1) {
-  begin_io();
+  hardware_begin();
   
   int x = x1-x0;
   int y = y1-y0;
@@ -348,7 +348,7 @@ void ePaper::drawLine(int x0, int y0, int x1, int y1) {
 
 
 void ePaper::drawCircle(int poX, int poY, int r) {
-  begin_io();
+  hardware_begin();
   int x = -r, y = 0, err = 2-2*r, e2;
   do {
     buffer_write(poX-x, poY+y, 1);
