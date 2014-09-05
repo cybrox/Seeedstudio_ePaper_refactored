@@ -45,55 +45,15 @@ void ePaper::begin(EPD_size sz)
 {
     size = sz;
     direction = DIRNORMAL;
-    
-    switch(size)
-    {
-        case EPD_1_44:              // 128*96
-        SIZE_LEN    = 128;
-        SIZE_WIDTH  = 96;
-        break;
-        
-        case EPD_2_0:               // 200*96
-        SIZE_LEN    = 200;
-        SIZE_WIDTH  = 96;
-        break;
-        
-        case EPD_2_7:               // 264*176
-        SIZE_LEN    = 264;
-        SIZE_WIDTH  = 176;
-        break;
-        
-        default:
-        println_ep("wrong size");
-        while(1);                   // die here
-    }
-    
-    DISP_LEN    = SIZE_LEN;
-    DISP_WIDTH  = SIZE_WIDTH;
+
+    DISP_LEN    = 200;
+    DISP_WIDTH  = 96;
     
     EPD.begin(size);
     init_io();
 }
 
-void ePaper::spi_detach()
-{
-}
-/*********************************************************************************************************
-** Function name:           begin
-** Descriptions:            begin
-*********************************************************************************************************/
-void ePaper::setDirection(EPD_DIR dir)
-{
-    // direction = dir;
-    
-    // if((direction == DIRLEFT) || (direction == DIRRIGHT))
-    // {
-    //     DISP_LEN    = SIZE_WIDTH;
-    //     DISP_WIDTH  = SIZE_LEN;
-    // }
-    
-    //eSD.setDirection(direction);
-}
+
 /*********************************************************************************************************
 ** Function name:           start
 ** Descriptions:            start
