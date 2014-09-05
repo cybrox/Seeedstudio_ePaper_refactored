@@ -16,7 +16,7 @@ class ePaper {
     EPD_DIR DISPLAY_DIRECT;
 
 
-    unsigned char _buffer[5808];
+    unsigned char _buffer[2400];
 
 
     int matrix_pin_cs;
@@ -29,11 +29,6 @@ class ePaper {
     void begin();
     void display();
     void hardware_begin();
-
-
-    void driver_begin();
-    void driver_start();
-    void driver_stop();
 
 
     void buffer_clear();
