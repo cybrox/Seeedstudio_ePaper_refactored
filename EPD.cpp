@@ -284,18 +284,6 @@ void EPD_Class::frame_data(PROGMEM const uint8_t *image, EPD_stage stage)
 	}
 }
 
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
-void EPD_Class::frame_data_sd(EPD_stage stage)
-{
-	for (uint8_t line = 0; line < this->lines_per_display ; ++line) 
-    {
-        SPI_on();
-        eSD.getLine(line, lineDta);
-		this->line(line, lineDta, 0, 0, stage);
-	}
-}
-#endif
-
 #if defined(EPD_ENABLE_EXTRA_SRAM)
 void EPD_Class::frame_sram(const uint8_t *image, EPD_stage stage)
 {
@@ -360,26 +348,6 @@ void EPD_Class::frame_data_repeat(PROGMEM const uint8_t *image, EPD_stage stage)
 #endif
 }
 
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
-void EPD_Class::frame_data_repeat_sd(EPD_stage stage) 
-{
-
-	long stage_time = this->factored_stage_time;
-
-
-    for(int i=0; i<7; i++)
-    {
-		unsigned long t_start = millis();
-		this->frame_data_sd(stage);
-		unsigned long t_end = millis();
-		if (t_end > t_start) {
-			stage_time -= t_end - t_start;
-		} else {
-			stage_time -= t_start - t_end + 1 + ULONG_MAX;
-		}
-    }
-}
-#endif
 
 #if defined(EPD_ENABLE_EXTRA_SRAM)
 void EPD_Class::frame_sram_repeat(const uint8_t *image, EPD_stage stage) 
@@ -556,147 +524,6 @@ void EPD_Class::line(uint16_t line, const uint8_t *data, uint8_t fixed_value, bo
     SPI_off();    
 }
 
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega328P__)
-void EPD_Class::line_sd(uint16_t line, const uint8_t *data, uint8_t fixed_value, bool read_progmem, EPD_stage stage) 
-{
-	// charge pump voltage levels
-    SPI_on();
-	Delay_us(10);
-	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x04), 2);
-	Delay_us(10);
-	SPI_send(this->EPD_Pin_EPD_CS, this->gate_source, this->gate_source_length);
-
-	// send data
-	Delay_us(10);
-	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x0a), 2);
-	Delay_us(10);
-
-	// CS low
-	digitalWrite(this->EPD_Pin_EPD_CS, LOW);
-	SPI_put_wait(0x72, this->EPD_Pin_BUSY);
-
-	// even pixels
-	for (uint16_t b = this->bytes_per_line; b > 0; --b) 
-    //for (int b=10; b > 0; --b) 
-    {
-		if (0 != data) 
-        {
-
-			// AVR has multiple memory spaces
-			uint8_t pixels;
-			if (read_progmem) 
-            {
-				pixels = pgm_read_byte_near(data + b - 1) & 0xaa;
-			} 
-            else 
-            {
-				pixels = data[b - 1] & 0xaa;
-			}
-            
-			switch(stage)
-            {
-                case EPD_compensate:  // B -> W, W -> B (Current Image)
-                    pixels = 0xaa | ((pixels ^ 0xaa) >> 1);
-                    break;
-                    
-                case EPD_white:       // B -> N, W -> W (Current Image)
-                    pixels = 0x55 + ((pixels ^ 0xaa) >> 1);
-                    break;
-                    
-                case EPD_inverse:     // B -> N, W -> B (New Image)
-                    pixels = 0x55 | (pixels ^ 0xaa);
-                    break;
-                    
-                case EPD_normal:       // B -> B, W -> W (New Image)
-                    pixels = 0xaa | (pixels >> 1);
-                    break;
-			}
-            
-			SPI_put_wait(pixels, this->EPD_Pin_BUSY);
-            //delay(10);
-		} 
-        else
-        {
-			SPI_put_wait(fixed_value, this->EPD_Pin_BUSY);
-		}	
-    }
-
-	// scan line
-	for (uint16_t b = 0; b < this->bytes_per_scan; ++b) 
-    {
-		if (line / 4 == b) 
-        {
-			SPI_put_wait(0xc0 >> (2 * (line & 0x03)), this->EPD_Pin_BUSY);
-		} 
-        else 
-        {
-			SPI_put_wait(0x00, this->EPD_Pin_BUSY);
-		}
-        //delay(10);
-	}
-
-	// odd pixels
-	for (uint16_t b = this->bytes_per_line; b > 0; --b) 
-    //for (int b=10; b > 0; --b) 
-    {
-		if (0 != data) 
-        {
-			// AVR has multiple memory spaces
-			uint8_t pixels;
-			if (read_progmem) 
-            {
-				pixels = pgm_read_byte_near(data + b) & 0x55;
-			} else 
-            {
-				pixels = data[b] & 0x55;
-			}
-            
-			switch(stage) 
-            {
-                case EPD_compensate:  // B -> W, W -> B (Current Image)
-                    pixels = 0xaa | (pixels ^ 0x55);
-                    break;
-                case EPD_white:       // B -> N, W -> W (Current Image)
-                    pixels = 0x55 + (pixels ^ 0x55);
-                    break;
-                case EPD_inverse:     // B -> N, W -> B (New Image)
-                    pixels = 0x55 | ((pixels ^ 0x55) << 1);
-                    break;
-                case EPD_normal:       // B -> B, W -> W (New Image)
-                    pixels = 0xaa | pixels;
-                    break;
-			}
-			uint8_t p1 = (pixels >> 6) & 0x03;
-			uint8_t p2 = (pixels >> 4) & 0x03;
-			uint8_t p3 = (pixels >> 2) & 0x03;
-			uint8_t p4 = (pixels >> 0) & 0x03;
-			pixels = (p1 << 0) | (p2 << 2) | (p3 << 4) | (p4 << 6);
-			SPI_put_wait(pixels, this->EPD_Pin_BUSY);
-		} 
-        else 
-        {
-			SPI_put_wait(fixed_value, this->EPD_Pin_BUSY);
-		}
-        //delay(10);
-	}
-
-	if (this->filler) 
-    {
-		SPI_put_wait(0x00, this->EPD_Pin_BUSY);
-	}
-
-	// CS high
-	digitalWrite(this->EPD_Pin_EPD_CS, HIGH);
-
-	// output data to panel
-	Delay_us(10);
-	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x70, 0x02), 2);
-	Delay_us(10);
-	SPI_send(this->EPD_Pin_EPD_CS, CU8(0x72, 0x2f), 2);
-    SPI_off();
-}
-
-#endif
 
 static void SPI_on() {
     SPI.end();
