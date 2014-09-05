@@ -1,29 +1,21 @@
 #ifndef __GT20L16_DRIVE_H__
 #define __GT20L16_DRIVE_H__
 
-#define PIN_GT20L16_CS      9
-
 class GT20L16_drive{
 
-private:
+  private:
     int pinCS;
     unsigned long getAddrFromUnicode(unsigned int uniCode);
     unsigned long GTRead(unsigned long Address);
-public:
 
-    void begin(int pinSelect);
-    
-    void begin(){begin(PIN_GT20L16_CS);}
 
+  public:
+    void begin(int pinSelect); 
+    void begin(){begin(9);}
     int getMatrixUnicode(unsigned int uniCode, unsigned char *matrix);
-
 
 };
 
 extern GT20L16_drive GT20L16;
 
 #endif
-
-/*********************************************************************************************************
-  END FILE
-*********************************************************************************************************/
