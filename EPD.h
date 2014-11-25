@@ -5,7 +5,7 @@
 #include <SPI.h>
 #include "ePaperDfs.h"
 
-#if defined(__MSP430_CPU__)
+#if defined(__MSP430_CPU__) || defined(__SAM3X8E__)
 #define PROGMEM
 #else
 #include <avr/pgmspace.h>
