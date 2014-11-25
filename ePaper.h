@@ -1,26 +1,3 @@
-/*
-  ePaper.h
-  2013 Copyright (c) Seeed Technology Inc.  All right reserved.
-
-  Modified by Loovee
-  www.seeedstudio.com
-  2013-7-2
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-
 #ifndef __EPAPER_H__
 #define __EPAPER_H__
 
@@ -28,67 +5,40 @@
 #include <SPI.h>
 #include <EPD.h>
 
-#include "sd_epaper.h"
 #include "ePaperDfs.h"
 
-#define EP_DEBUG            1
+class ePaper {
 
-#if EP_DEBUG
-#define print_ep(X)         Serial.print(X)
-#define println_ep(X)       Serial.println(X)
-#else
-#define print_ep(X)
-#define println_ep(X)
-#endif
+  private:
+    int DISPLAY_SIZE_X;
+    int DISPLAY_SIZE_Y;
+    int DISPLAY_LINE_B;
+    EPD_DIR DISPLAY_DIRECT;
 
-class ePaper
-{
 
-private:
+    unsigned char _buffer[2400];
 
-    unsigned char tMatrix[32];
-    
-    int DISP_LEN;
-    int DISP_WIDTH;
-    
-    EPD_DIR direction;
-    
-public:
 
-    EPD_size size;
+    int matrix_pin_cs;
+    unsigned char matrix_character[32];
+    unsigned long matrix_get_unicode_address(unsigned int uniCode);
+    unsigned long matrix_read(unsigned long Address);
     
-    void begin(EPD_size sz);
-    void setDirection(EPD_DIR dir);
-    void start();
-    void end(); 
-    void init_io();
-    
-    unsigned char display();                // refresh 
-    
-    void image_flash(PROGMEM const unsigned char *image) {
-        start();
-        EPD.image(image);
-        end();
-    } 
- 
-    void clear() {
-        start();
-        EPD.clear();
-        end();
-    } 
-    
-    void clear_sd();                         // clear sd card 
 
-    void image_sram(unsigned char *image) {
-        start();
-        EPD.image_sram(image);
-        end();
-    }
-    
-    inline void drawPixel(int x, int y, unsigned char color) {
-      eSD.putPixel(x, y, color);
-    }
-    
+  public:
+    void begin();
+    void display();
+    void hardware_begin();
+
+
+    void buffer_clear();
+    void buffer_write(int x, int y, bool fill);
+
+
+    void matrix_begin();
+    int matrix_get_unicode(unsigned int uniCode, unsigned char *matrix);
+
+
     int drawChar(char c, int x, int y);
     int drawString(char *string, int poX, int poY);
     int drawNumber(long long_num,int poX, int poY);
@@ -112,7 +62,3 @@ public:
 extern ePaper EPAPER;
 
 #endif
-
-/*********************************************************************************************************
-  END FILE
-*********************************************************************************************************/
