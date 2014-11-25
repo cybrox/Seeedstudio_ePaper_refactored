@@ -1,4 +1,4 @@
-## Small ePaper Shielf refactored
+## Small ePaper Shield refactored
 This repository is a very small and fast version of the [SeeedStudio Small ePaper Library](https://github.com/Seeed-Studio/Small_ePaper_Shield) compatible with the Arduino MEGA (ATmega2560) and Arduino DUE (SAM3X8E). It might also work on other Arduino devices but I've only tested it on these two.
 
 ## Why does this exist?
