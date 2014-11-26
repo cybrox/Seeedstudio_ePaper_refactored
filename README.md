@@ -14,3 +14,7 @@ Major changes to the full library:
  - Removed a lot of the matrix charmaps, chinese characters can't be used.
  - It works fast and stable on Arduino DUE!
  
+
+## Usage
+Just call `EPAPER.begin();` once in your setup routine.  
+After this, you can use it as stated in the [official documentations](https://github.com/Seeed-Studio/Small_ePaper_Shield/blob/master/README.md#3-int-drawcharchar-c-int-x-int-y).
