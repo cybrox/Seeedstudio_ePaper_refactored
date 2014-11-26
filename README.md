@@ -16,5 +16,6 @@ Major changes to the full library:
  
 
 ## Usage
-Just call `EPAPER.begin();` once in your setup routine.  
-After this, you can use it as stated in the [official documentations](https://github.com/Seeed-Studio/Small_ePaper_Shield/blob/master/README.md#3-int-drawcharchar-c-int-x-int-y).
+1. Set the correct display size [via constant](https://github.com/cybrox/Seeedstudio_ePaper_refactored/blob/master/ePaper.h#L19)
+2. Call `EPAPER.begin();` once in your `setup` routine.  
+3. After this, you can use it as stated in the [official documentations](https://github.com/Seeed-Studio/Small_ePaper_Shield/blob/master/README.md#3-int-drawcharchar-c-int-x-int-y).
