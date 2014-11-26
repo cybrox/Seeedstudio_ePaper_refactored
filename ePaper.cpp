@@ -9,7 +9,7 @@ void ePaper::begin(){
   DISPLAY_SIZE_Y = 96;  // Display size (in pixels) on y axis
   DISPLAY_LINE_B = 25;  // Display bytes per line (x size / 8)
   
-  EPD.begin(EPD_2_0);
+  EPD.begin(DISPLAYSIZE);
   hardware_begin();
   matrix_begin();
 }
@@ -58,7 +58,7 @@ void ePaper::buffer_write(int x, int y, bool fill){
 
 
 void ePaper::buffer_clear() {
-  memset(_buffer, 0x00, 5808);
+  memset(_buffer, 0x00, BUFFERSIZE);
 }
 
 

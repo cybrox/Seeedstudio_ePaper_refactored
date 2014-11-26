@@ -7,6 +7,30 @@
 
 #include "ePaperDfs.h"
 
+////////////////////////////////////////////////////////////////////////////////
+// Small ePaper shield refactored config.                                     //
+// You might want to adjust these values in order to use different            //
+// ePaper shields. This supports the 3 default sized from seeedstudio.        //
+//                                                                            //
+// Choose one of the folloqing display sizes:                                 //
+// EPD_1_44 (128 x 96)                                                        //
+// EPD_2_0 (200 x 96)                                                         //
+// EPD_2_7 (264 x 176)                                                        //
+  #define DISPLAYSIZE EPD_1_44                                                 //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+// calculate buffer size
+#if DISPLAYSIZE == EPD_1_44
+#define BUFFERSIZE 1536   // (128 x 96) / 8
+#elif DISPLAYSIZE == EPD_2_0
+#define BUFFERSIZE 2400   // (200 x 96) / 8
+#else
+#define BUFFERSIZE 5808   // (264 * 176) / 8
+#endif
+
 class ePaper {
 
   private:
@@ -16,7 +40,7 @@ class ePaper {
     EPD_DIR DISPLAY_DIRECT;
 
 
-    unsigned char _buffer[2400];
+    unsigned char _buffer[BUFFERSIZE];
 
 
     int matrix_pin_cs;
